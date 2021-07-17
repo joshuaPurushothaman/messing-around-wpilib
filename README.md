@@ -29,6 +29,8 @@ romi1 - Command based, for Romi Robot https://docs.wpilib.org/en/stable/docs/rom
 
 shootertesting - TimedRobot. Code for Spitfire (2020-2021 Infinite Recharge robot) shooter subsystem testing.
 
+TalonFXDiffDrive - CommandBased, differential drive code for Falcon500/TalonFXs! Check it out if you plan on using a Falcon based drivetrain!
+
 talontest - TimedRobot, some more old TalonFX testing code.
 
 trajectory business in here:
