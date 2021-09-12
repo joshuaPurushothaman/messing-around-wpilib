@@ -25,6 +25,8 @@ chameleon-test - TimedRobot. Chameleon is a vision solution for FRC. https://cha
 
 los talones - TimedRobot. TalonFX (Falcon 500) testing code. Contains a potential wrapper class for the TalonFX API in CRRFalcon500.java. Check it out if you plan on using Falcons!
 
+PurePursuitTest - Command Based, for Romi Robot. Attempt at Pure Pursuit trajectory following...
+
 romi1 - Command based, for Romi Robot https://docs.wpilib.org/en/stable/docs/romi-robot/index.html Y'all should get one!
 
 shootertesting - TimedRobot. Code for Spitfire (2020-2021 Infinite Recharge robot) shooter subsystem testing.
