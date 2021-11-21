@@ -14,19 +14,26 @@ package frc.robot;
  */
 public final class Constants
 {
-	public static final double kPSetWheelSpeeds = 4;	//	5
-	public static final double kFFLeft = 11;
-	public static final double kFFRight = 10;
-
 	public static final double kMaxSpeedMetersPerSecond = 0.8 / 2;
 	public static final double kMaxAccelerationMetersPerSecondSquared = kMaxSpeedMetersPerSecond / 2;
+	public static final double kMaxTurnSpeedDegreesPerSecond = 360 / 1;
+	public static final double kMaxTurnAccelerationDegreesPerSecondSquared = kMaxTurnSpeedDegreesPerSecond / 1;
 	
 	public static final double kLookAheadDistance = 0.15;
 
 
-	public static final double kPRamsete = 0.085;
+	public static final double kPSetWheelSpeeds = 0.15;
 
-	public static final double ksVolts = 0.929;
-	public static final double kvVoltSecondsPerMeter = 6.33;
-	public static final double kaVoltSecondsSquaredPerMeter = 0.0389;
+	public static final double kPDTD = 6;
+	public static final double kToleranceMeters = 0.05;
+	public static final double kPTTA = 0.014;
+	public static final double kToleranceDegrees = 6;
+
+
+	// perfect feedforwards! woohoo! hand tuned babie!
+	public static final double lksVolts = 0.9;
+	public static final double lkvVoltSecondsPerMeter = 9.5;
+	
+	public static final double rksVolts = 0.7;
+	public static final double rkvVoltSecondsPerMeter = 8.3;
 }

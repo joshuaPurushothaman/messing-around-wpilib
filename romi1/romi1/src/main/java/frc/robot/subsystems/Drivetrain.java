@@ -23,37 +23,38 @@ public class Drivetrain extends SubsystemBase {
 
 	// The Romi has the left and right motors set to
 	// PWM channels 0 and 1 respectively
-	private final Spark m_leftMotor = new Spark(0);
-	private final Spark m_rightMotor = new Spark(1);
+	private final Spark left = new Spark(0);
+	private final Spark right = new Spark(1);
 
 	// The Romi has onboard encoders that are hardcoded
 	// to use DIO pins 4/5 and 6/7 for the left and right
-	private final Encoder m_leftEncoder = new Encoder(4, 5);
-	private final Encoder m_rightEncoder = new Encoder(6, 7);
+	private final Encoder leftEncoder = new Encoder(4, 5);
+	private final Encoder rightEncoder = new Encoder(6, 7);
 
 	// Set up the differential drive controller
-	private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+	private final DifferentialDrive dt = new DifferentialDrive(left, right);
 
 	// Set up the RomiGyro
-	private final RomiGyro m_gyro = new RomiGyro();
+	private final RomiGyro gyro = new RomiGyro();
 
 	// Set up the BuiltInAccelerometer
-	private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
+	private final BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
 
 
-	private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d());
+	private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(new Rotation2d());
 
 
 	/** Creates a new Drivetrain. */
 	public Drivetrain() {
+		resetSensors();
+
 		// Use METERS as unit for encoder distances
-		m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
-		m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
-		resetEncoders();
+		leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
+		rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
 	}
 
 	public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
-		m_drive.arcadeDrive(xaxisSpeed, zaxisRotate);
+		dt.arcadeDrive(xaxisSpeed, zaxisRotate);
 	}
 
 	PIDController leftController = new PIDController(Constants.kPDriveVel, 0, 0);
@@ -69,20 +70,20 @@ public class Drivetrain extends SubsystemBase {
 
 		double leftSpeed = leftController.calculate(curSpeeds.leftMetersPerSecond, left);
 		double rightSpeed = leftController.calculate(curSpeeds.rightMetersPerSecond, right);
-		m_drive.tankDrive(leftSpeed, rightSpeed);
+		dt.tankDrive(leftSpeed, rightSpeed);
 	}
 
 	public void resetEncoders() {
-		m_leftEncoder.reset();
-		m_rightEncoder.reset();
+		leftEncoder.reset();
+		rightEncoder.reset();
 	}
 
 	public double getLeftDistanceMeters() {
-		return m_leftEncoder.getDistance();
+		return leftEncoder.getDistance();
 	}
 
 	public double getRightDistanceMeters() {
-		return m_rightEncoder.getDistance();
+		return rightEncoder.getDistance();
 	}
 
 	public double getAverageDistanceMeters() {
@@ -91,7 +92,7 @@ public class Drivetrain extends SubsystemBase {
 
 	public DifferentialDriveWheelSpeeds getWheelSpeeds()
 	{
-		return new DifferentialDriveWheelSpeeds(m_leftEncoder.getRate(), m_rightEncoder.getRate());
+		return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
 	}
 	/**
 	 * The acceleration in the X-axis.
@@ -99,7 +100,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @return The acceleration of the Romi along the X-axis in Gs
 	 */
 	public double getAccelX() {
-		return m_accelerometer.getX();
+		return accelerometer.getX();
 	}
 
 	/**
@@ -108,7 +109,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @return The acceleration of the Romi along the Y-axis in Gs
 	 */
 	public double getAccelY() {
-		return m_accelerometer.getY();
+		return accelerometer.getY();
 	}
 
 	/**
@@ -117,7 +118,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @return The acceleration of the Romi along the Z-axis in Gs
 	 */
 	public double getAccelZ() {
-		return m_accelerometer.getZ();
+		return accelerometer.getZ();
 	}
 
 	/**
@@ -126,7 +127,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @return The current angle of the Romi in degrees
 	 */
 	public double getGyroAngleX() {
-		return m_gyro.getAngleX();
+		return gyro.getAngleX();
 	}
 
 	/**
@@ -135,7 +136,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @return The current angle of the Romi in degrees
 	 */
 	public double getGyroAngleY() {
-		return m_gyro.getAngleY();
+		return gyro.getAngleY();
 	}
 
 	/**
@@ -144,28 +145,42 @@ public class Drivetrain extends SubsystemBase {
 	 * @return The current angle of the Romi in degrees
 	 */
 	public double getGyroAngleZ() {
-		return m_gyro.getAngleZ();
+		return gyro.getAngleZ();
 	}
 
 	public double getHeading()
 	{
-		return m_gyro.getAngleZ();
+		return gyro.getAngleZ();
 	}
 
 	/** Reset the gyro. */
 	public void resetGyro() {
-		m_gyro.reset();
+		gyro.reset();
 	}
 
 	public Pose2d getPose()
 	{
-		return m_odometry.getPoseMeters();
+		return odometry.getPoseMeters();
 	}
 
 	@Override
 	public void periodic() {
 		// Update the odometry in the periodic block
-		m_odometry.update(new Rotation2d(getHeading()), m_leftEncoder.getDistance(),
-						m_rightEncoder.getDistance());
+		odometry.update(new Rotation2d(getHeading()), leftEncoder.getDistance(),
+						rightEncoder.getDistance());
+	}
+
+	public void resetSensors() 
+	{
+		resetEncoders();
+		resetGyro();
+	}
+
+	public void tankDriveVolts(double leftVolts, double rightVolts)
+	{
+		left.setVoltage(leftVolts);
+		right.setVoltage(rightVolts);
+		
+		dt.feed();
 	}
 }

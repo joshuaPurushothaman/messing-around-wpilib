@@ -11,6 +11,7 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.AutonomousDistance;
 import frc.robot.commands.AutonomousTime;
 import frc.robot.commands.TrajectoryCommand;
+import frc.robot.commands.TrajectoryTEST;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.OnBoardIO;
 import frc.robot.subsystems.OnBoardIO.ChannelMode;
@@ -63,7 +64,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Default command is arcade drive. This will run unless another command
     // is scheduled over it.
-    m_drivetrain.setDefaultCommand(getArcadeDriveCommand());
+    m_drivetrain.setDefaultCommand(new ArcadeDrive(
+      m_drivetrain, () -> -m_controller.getRawAxis(1), () -> m_controller.getRawAxis(0))); //  changed to 0 to work with sim keyboard :));
 
     // Example of how to use the onboard IO
     Button onboardButtonA = new Button(m_onboardIO::getButtonAPressed);
@@ -72,9 +74,10 @@ public class RobotContainer {
         .whenInactive(new PrintCommand("Button A Released"));
 
     // Setup SmartDashboard options
-    m_chooser.setDefaultOption("Auto Routine Distance", new AutonomousDistance(m_drivetrain));
+    m_chooser.setDefaultOption("Trajectory", new TrajectoryCommand(m_drivetrain));
+    m_chooser.addOption("Trajectory TEST", new TrajectoryTEST(m_drivetrain));
+    m_chooser.addOption("Auto Routine Distance", new AutonomousDistance(m_drivetrain));
     m_chooser.addOption("Auto Routine Time", new AutonomousTime(m_drivetrain));
-    m_chooser.addOption("Trajectory", new TrajectoryCommand(m_drivetrain));
     SmartDashboard.putData(m_chooser);
   }
 
@@ -85,15 +88,5 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return m_chooser.getSelected();
-  }
-
-  /**
-   * Use this to pass the teleop command to the main {@link Robot} class.
-   *
-   * @return the command to run in teleop
-   */
-  public Command getArcadeDriveCommand() {
-    return new ArcadeDrive(
-        m_drivetrain, () -> -m_controller.getRawAxis(1), () -> m_controller.getRawAxis(0)); //  changed to 0 to work with sim keyboard :)
   }
 }

@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
-public class TrajectoryCommand extends SequentialCommandGroup
+public class TrajectoryTEST extends SequentialCommandGroup
 {
-    public TrajectoryCommand(Drivetrain dt)
+    public TrajectoryTEST(Drivetrain dt)
     {
         // Create config for trajectory
         TrajectoryConfig config =
@@ -38,6 +38,8 @@ public class TrajectoryCommand extends SequentialCommandGroup
             new PIDController(Constants.kPDriveVel, 0, 0), new PIDController(Constants.kPDriveVel, 0, 0),
             dt::tankDriveVolts, dt);
         
+        
+
         addCommands
         (
             new InstantCommand(() -> dt.resetSensors()),

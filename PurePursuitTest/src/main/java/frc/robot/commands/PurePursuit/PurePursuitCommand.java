@@ -31,7 +31,6 @@ public class PurePursuitCommand extends CommandBase
     @Override
     public void end(boolean interrupted)
     {
-        outputMetersPerSecond.accept(0.0, 0.0);
         System.out.println(interrupted ? " traj interrupted" : "traj COMPLETED! :D");
     }
 

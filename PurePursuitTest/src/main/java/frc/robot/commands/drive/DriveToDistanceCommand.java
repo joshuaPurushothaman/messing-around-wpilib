@@ -1,7 +1,8 @@
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj.controller.*;
+import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class DriveToDistanceCommand extends PIDCommand
@@ -10,7 +11,7 @@ public class DriveToDistanceCommand extends PIDCommand
 
     public DriveToDistanceCommand(double targetDistanceMeters, Drivetrain dt)
     {
-        super(new PIDController(6, 0, 0),
+        super(new PIDController(Constants.kPDTD, 0, 0),
             dt::getAverageDistanceMeters,
             targetDistanceMeters,
             output -> dt.arcadeDrive(output, 0), 
@@ -18,9 +19,7 @@ public class DriveToDistanceCommand extends PIDCommand
 
         this.dt = dt;
 
-        getController().setTolerance(0.05);
-
-        addRequirements(dt);
+        getController().setTolerance(Constants.kToleranceMeters, 0);
     }
 
     @Override

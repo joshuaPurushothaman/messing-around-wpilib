@@ -12,15 +12,15 @@ import frc.robot.subsystems.Drivetrain;
 
 public class RamseteTrajCommand extends SequentialCommandGroup
 {
-    public RamseteTrajCommand(Drivetrain m_drivetrain)
-    {
+    public RamseteTrajCommand(Drivetrain dt)
+    {       
         var autoVoltageConstraint =
             new DifferentialDriveVoltageConstraint(
-                new SimpleMotorFeedforward(Constants.ksVolts, 
-                                        Constants.kvVoltSecondsPerMeter, 
-                                        Constants.kaVoltSecondsSquaredPerMeter),
+                new SimpleMotorFeedforward(Constants.rksVolts, 
+                                            Constants.rkvVoltSecondsPerMeter),
                 Drivetrain.kinematics,
                 10);
+
 
         // Create config for trajectory
         TrajectoryConfig config =
@@ -32,32 +32,28 @@ public class RamseteTrajCommand extends SequentialCommandGroup
 
         // An example trajectory to follow.  All units in meters.
         Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
             List.of(
-                new Translation2d(0.15, 0)
-                // new Translation2d(1, 1),
-                // new Translation2d(2, -1)
+                new Translation2d(0.3, 0)
             ),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(.3, 0, new Rotation2d(0)),
-            // Pass config
+            new Pose2d(.6, 0, new Rotation2d(0)),
             config
         );
 
         RamseteCommand ramseteCommand = new RamseteCommand(
             exampleTrajectory,
-            m_drivetrain::getPose,
+            dt::getPose,
             new RamseteController(),
-            new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltSecondsPerMeter, Constants.kaVoltSecondsSquaredPerMeter),
             Drivetrain.kinematics,
-            m_drivetrain::getWheelSpeeds,
-            new PIDController(Constants.kPRamsete, 0, 0),
-            new PIDController(Constants.kPRamsete, 0, 0),
-            m_drivetrain::tankDriveVolts,
-            m_drivetrain);
+            (left, right) -> dt.setWheelSpeeds(left, right),
+            dt
+        );
         
-        addCommands(ramseteCommand.andThen(() -> m_drivetrain.setWheelSpeeds(0, 0)));
+        addCommands
+        (
+            new InstantCommand(() -> {dt.resetPose(); dt.resetSensors();}),
+            ramseteCommand,
+            new RunCommand(() -> dt.setWheelSpeeds(0, 0))
+        );
     }
 }
