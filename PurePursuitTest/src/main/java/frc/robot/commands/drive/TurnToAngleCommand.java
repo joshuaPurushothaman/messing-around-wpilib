@@ -19,7 +19,7 @@ public class TurnToAngleCommand extends PIDCommand
 
         this.dt = dt;
         
-        getController().setTolerance(Constants.kToleranceDegrees, 0);
+        getController().setTolerance(Constants.kToleranceDegrees);
         getController().enableContinuousInput(-180, 180);
     }
 

@@ -16,8 +16,8 @@ public final class Constants
 {
 	public static final double kMaxSpeedMetersPerSecond = 0.8 / 2;
 	public static final double kMaxAccelerationMetersPerSecondSquared = kMaxSpeedMetersPerSecond / 2;
-	public static final double kMaxTurnSpeedDegreesPerSecond = 360 / 1;
-	public static final double kMaxTurnAccelerationDegreesPerSecondSquared = kMaxTurnSpeedDegreesPerSecond / 1;
+	public static final double kMaxTurnSpeedDegreesPerSecond = 360 / 3;
+	public static final double kMaxTurnAccelerationDegreesPerSecondSquared = kMaxTurnSpeedDegreesPerSecond / 0.1;
 	
 	public static final double kLookAheadDistance = 0.15;
 
@@ -26,8 +26,8 @@ public final class Constants
 
 	public static final double kPDTD = 6;
 	public static final double kToleranceMeters = 0.05;
-	public static final double kPTTA = 0.014;
-	public static final double kToleranceDegrees = 6;
+	public static final double kPTTA = 0.015;
+	public static final double kToleranceDegrees = 4;
 
 
 	// perfect feedforwards! woohoo! hand tuned babie!
