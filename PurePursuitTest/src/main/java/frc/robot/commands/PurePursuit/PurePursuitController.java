@@ -38,7 +38,7 @@ public class PurePursuitController
 		lastLookAheadPoint = traj.getStates().get(1).poseMeters;
 	}
 
-	public State findClosestPoint()
+	private State findClosestPoint()
 	{
 		var robotPose = poseSupplier.get();
 
@@ -68,7 +68,7 @@ public class PurePursuitController
 		return closestState;
 	}
 
-	public Pose2d findLookAheadPoint()
+	private Pose2d findLookAheadPoint()
 	{
 		for (int i = indexOfLastLookAheadPoint; i < traj.getStates().size() - 1; i++)
 		{
@@ -128,14 +128,14 @@ public class PurePursuitController
 		return null;
 	}
 
-	public double dotProduct(Transform2d a, Transform2d b)
+	private double dotProduct(Transform2d a, Transform2d b)
 	{
 		return (a.getX()*b.getX()) + (a.getY()*b.getY());
 	}
 
 	double lastCurvature;
 
-	public double calculateCurvature()
+	private double calculateCurvature()
 	{
 		var robotPose = poseSupplier.get();
 		
@@ -190,5 +190,3 @@ public class PurePursuitController
 		return findClosestPoint().equals(traj.getStates().get(traj.getStates().size()-1));
 	}
 }
-
-// TODO: reprivatize methods except setWheelSpeeds and isFinished

@@ -38,7 +38,7 @@ public class Drivetrain extends SubsystemBase {
 	private final RomiGyro gyro = new RomiGyro();
 
 	// Set up the BuiltInAccelerometer
-	private final BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
+	// private final BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
 
 
 	private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(new Rotation2d());

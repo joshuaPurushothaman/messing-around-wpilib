@@ -41,7 +41,6 @@ public class RobotContainer
 		chooser.addOption("Set Wheel Speeds test", new RunCommand(() -> dt.setWheelSpeeds(0.3, 0.3), dt));
 		chooser.addOption("Ramsete", new RamseteTrajCommand(dt));
 		chooser.addOption("Sharp square", new Square(dt));
-		chooser.addOption("PPC Test", new PPCTesterCommand(dt));
 		chooser.addOption("Profiled Square", new ProfiledSquare(dt));
 		chooser.addOption("Ultimate DTD", new UltimateDTD(0.3, dt));
 
