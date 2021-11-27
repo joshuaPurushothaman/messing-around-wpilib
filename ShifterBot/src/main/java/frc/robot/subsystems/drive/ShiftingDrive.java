@@ -13,7 +13,7 @@ public class ShiftingDrive extends Drivetrain
     
     // TODO: set velocity conversion factors
 
-    public void setHighGear(boolean isHighGear)
+    public void shift(boolean isHighGear)
     {
         shifter.set(isHighGear);
     }
@@ -30,6 +30,6 @@ public class ShiftingDrive extends Drivetrain
     {
         final double shiftVel = 0;
         
-        setHighGear(Math.abs(lfEncoder.getVelocity() + rfEncoder.getVelocity()) > shiftVel);    
-    }    
+        shift(Math.abs(lfEncoder.getVelocity() + rfEncoder.getVelocity()) > shiftVel);
+    }
 }

@@ -28,7 +28,6 @@ public class UltimateDTD extends CommandBase
     public void initialize()
     {
         dt.resetSensors();
-        distController.reset(0);
     }
 
     @Override

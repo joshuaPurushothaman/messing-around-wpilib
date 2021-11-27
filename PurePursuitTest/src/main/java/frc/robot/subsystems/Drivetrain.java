@@ -32,7 +32,7 @@ public class Drivetrain extends SubsystemBase {
 	private final Encoder rightEncoder = new Encoder(6, 7);
 
 	// Set up the differential drive controller
-	private final DifferentialDrive drive = new DifferentialDrive(left, right);
+	private final DifferentialDrive dt = new DifferentialDrive(left, right);
 
 	// Set up the RomiGyro
 	private final RomiGyro gyro = new RomiGyro();
@@ -58,7 +58,7 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
-		drive.arcadeDrive(xaxisSpeed, zaxisRotate);
+		dt.arcadeDrive(xaxisSpeed, zaxisRotate);
 	}
 
 	PIDController leftController = new PIDController(Constants.kPSetWheelSpeeds, 0, 0);
@@ -91,7 +91,7 @@ public class Drivetrain extends SubsystemBase {
 	public void tankDriveVolts(double leftVolts, double rightVolts) {
 		left.setVoltage(leftVolts);
 		right.setVoltage(-rightVolts); // We invert this to maintain +ve = forward
-		drive.feed();
+		dt.feed();
 	}
 
 	public void resetEncoders() {
@@ -156,5 +156,10 @@ public class Drivetrain extends SubsystemBase {
 	{
 		resetGyro();
 		resetEncoders();
+	}
+
+	public void setMaxOutput(double maxOutput)
+	{
+		dt.setMaxOutput(maxOutput);
 	}
 }

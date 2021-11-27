@@ -18,6 +18,7 @@ public class RobotContainer
 {
 	private final Drivetrain dt = new Drivetrain();
 	private final OnBoardIO onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
+	private final Vision vision = new Vision();
 
 	private final Joystick controller = new Joystick(0);
 
@@ -43,6 +44,7 @@ public class RobotContainer
 		chooser.addOption("Sharp square", new Square(dt));
 		chooser.addOption("Profiled Square", new ProfiledSquare(dt));
 		chooser.addOption("Ultimate DTD", new UltimateDTD(0.3, dt));
+		chooser.addOption("AimCommand", new AimCommand(dt, vision).perpetually());
 
 		SmartDashboard.putData("Auto chooser", chooser);
 	}
