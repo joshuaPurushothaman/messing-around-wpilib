@@ -45,6 +45,8 @@ public class RobotContainer
 		chooser.addOption("Profiled Square", new ProfiledSquare(dt));
 		chooser.addOption("Ultimate DTD", new UltimateDTD(0.3, dt));
 		chooser.addOption("AimCommand", new AimCommand(dt, vision).perpetually());
+		chooser.addOption("AimCommand2", new AimCommand2(dt, vision).perpetually());
+		chooser.addOption("Profiled TTA", new TTAProfiled(90, dt));
 
 		SmartDashboard.putData("Auto chooser", chooser);
 	}

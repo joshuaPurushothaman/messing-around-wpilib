@@ -30,7 +30,7 @@ public final class Constants
 	public static final double kToleranceMeters = 0.05;
 	public static final double kPTTA = 0.015;
 	public static final double kToleranceDegrees = 4;
-	public static final double kPAim = 0.1;
+	public static final double kPAim = 0.04;
 	public static final double kToleranceDegreesAim = 1;
 
 

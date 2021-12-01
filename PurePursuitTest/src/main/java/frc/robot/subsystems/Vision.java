@@ -12,25 +12,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Vision extends SubsystemBase
 {
-    VideoSource logiCam = new HttpCamera("Logitech Camera", "http://wpilibpi.local:1181/?action=stream");
-    CvSink cvSink = CameraServer.getInstance().getVideo(logiCam);
+    VideoSource cam = new HttpCamera("Logitech Camera", "http://wpilibpi.local:1181/?action=stream");
+    // VideoSource cam = CameraServer.getInstance().startAutomaticCapture("HP Camera", 0);
+    CvSink cvSink = CameraServer.getInstance().getVideo(cam);
     CvSource outputStream = CameraServer.getInstance().putVideo("Processed Output", 640, 480);
 
     Mat source = new Mat();
     Mat output = new Mat();
 
-    double x;
-    double y;
+    double x, y, areaPercentRatio;
     boolean valid;
 
     private void processImage()
     {
-        // Filter out high frequency noise using a Gaussian Blur
-        Mat blurred = new Mat();
-        Imgproc.GaussianBlur(source, blurred, new Size(25, 25), 0);
-
         Mat hsv = new Mat();
-        Imgproc.cvtColor(blurred, hsv, Imgproc.COLOR_BGR2HSV);
+        Imgproc.cvtColor(source, hsv, Imgproc.COLOR_BGR2HSV);
 
         // preparing the mask to overlay 
         // https://www.geeksforgeeks.org/filter-color-with-opencv/
@@ -38,15 +34,28 @@ public class Vision extends SubsystemBase
         Scalar upperGreen = new Scalar(80, 255, 255);
         Mat mask = new Mat();
         Core.inRange(hsv, lowerGreen, upperGreen, mask);
+
+        Mat opening = new Mat();
+        Imgproc.morphologyEx(mask, opening, Imgproc.MORPH_OPEN, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3)));
         
         var contours = new ArrayList<MatOfPoint>();
-        var hierarchy = new Mat();
-        Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(opening, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        
+        output = opening; // for output stream
 
         if (contours.size() > 0)
         {
+            var biggestContour = contours.get(0);
+            for (int i = 0; i < contours.size(); i++)
+            {
+                if (contours.get(i).size().area() > biggestContour.size().area())
+                    biggestContour = contours.get(i);
+            }
+
+            areaPercentRatio = 100 * Imgproc.contourArea(biggestContour) / source.size().area();
+
             // https://www.pyimagesearch.com/2016/02/01/opencv-center-of-contour
-            var m = Imgproc.moments(contours.get(0));
+            var m = Imgproc.moments(biggestContour);
             x = m.m10 / m.m00;
             y = m.m01 / m.m00;
             
@@ -59,25 +68,27 @@ public class Vision extends SubsystemBase
 
             y *= -1;
 
-            // Convert to 110 degree FOV scale
-            x *= 110;
-            y *= 110;
+            // Convert to angles using FOV
+            // https://www.chiefdelphi.com/t/lifecam-hd-3000-specifications-horizontal-and-vertical-fov/353550/2
+            // https://github.com/rwb27/openflexure_microscope/wiki/Camera-Options
+            x *= 46.1664822;
+            y *= 27.0430565;
 
             valid = true;
         } else {
             x = 0;
             y = 0;
+            areaPercentRatio = 0;
             valid = false;
         }
-
-        output = mask;
     }
 
     private void updateSmartDashboard()
     {
         SmartDashboard.putNumber("Vision X", getX());
         SmartDashboard.putNumber("Vision Y", getY());
-        SmartDashboard.putBoolean("Vision V", getV());
+        SmartDashboard.putNumber("Vision AreaPercentRatio", getA());
+        SmartDashboard.putBoolean("Vision Valid", getV());
     }
 
     public double getX()
@@ -90,6 +101,11 @@ public class Vision extends SubsystemBase
         return y;
     }
 
+    public double getA()
+    {
+        return areaPercentRatio;
+    }
+
     public boolean getV()
     {
         return valid;
@@ -98,10 +114,13 @@ public class Vision extends SubsystemBase
     @Override
     public void periodic()
     {
-        //  update source frame
         long errorCode = cvSink.grabFrame(source);
+        
         if (errorCode == 0)
+        {
+            System.out.println(cvSink.getError());
             return;
+        }
 
         processImage();
         updateSmartDashboard();
