@@ -234,7 +234,7 @@ public class Vision extends SubsystemBase
         }
 
         processImage();
-        // TODO im marking this as todo so i remember to bring it back when i need it updateTable();
+        updateTable();
         
         outputStream.putFrame(output);
         output = new Mat(); // reset output mat

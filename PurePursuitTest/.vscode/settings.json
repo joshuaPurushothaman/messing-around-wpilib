@@ -14,5 +14,6 @@
     "**/.factorypath": true,
     "**/*~": true
   },
-  "wpilib.skipSelectSimulateExtension": true
+  "wpilib.skipSelectSimulateExtension": true,
+  "java.format.settings.url": "C:/Users/joshu/Desktop/Me codey bois II/eclipse-formatter.xml"
 }

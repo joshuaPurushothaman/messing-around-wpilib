@@ -6,40 +6,26 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 
-public class AimCommand extends ProfiledPIDCommand
-{
+public class AimCommand extends ProfiledPIDCommand {
     Vision2 vision;
     Drivetrain dt;
 
-    public AimCommand(Drivetrain dt, Vision2 vision)
+    public AimCommand(Drivetrain dt, Vision2 vision) 
     {
         super(new ProfiledPIDController(Constants.kPAim, 0, 0,
-                new TrapezoidProfile.Constraints(Constants.kMaxTurnSpeedDegreesPerSecondAim, 
+            new TrapezoidProfile.Constraints(Constants.kMaxTurnSpeedDegreesPerSecondAim,
                     Constants.kMaxTurnAccelerationDegreesPerSecondSquaredAim)),
-            () -> -vision.getX(), 
-            new TrapezoidProfile.State(0, 0),
-            (output, setpoint) -> dt.arcadeDrive(0, output),
+            () -> -vision.getX(), new TrapezoidProfile.State(0, 0), (output, setpoint) -> dt.arcadeDrive(0, output),
             dt, vision);
 
-            this.vision = vision;
-            this.dt = dt;
+        this.vision = vision;
+        this.dt = dt;
 
-            // dt.setMaxOutput(0.25);
-
-            getController().setTolerance(Constants.kToleranceDegreesAim);
+        getController().setTolerance(Constants.kToleranceDegreesAim);
     }
 
     @Override
-    public void end(boolean interrupted)
-    {
-        super.end(interrupted);
-
-        // dt.setMaxOutput(1);
-    }
-
-    @Override
-    public boolean isFinished()
-    {
+    public boolean isFinished() {
         return getController().atGoal() || !vision.getValid();
     }
 }

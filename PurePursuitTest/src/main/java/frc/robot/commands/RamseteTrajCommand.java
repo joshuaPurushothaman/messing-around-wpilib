@@ -32,13 +32,13 @@ public class RamseteTrajCommand extends SequentialCommandGroup
 
         var start = dt.getStartingPose();
 
-        Trajectory traj = TrajectoryGenerator.generateTrajectory(
-            List.of(
+		Trajectory traj = TrajectoryGenerator.generateTrajectory(
+			List.of(
                 start,
-				new Pose2d(0.2, 0, new Rotation2d(0)).relativeTo(start)
+		        new Pose2d(0.2, 0, new Rotation2d(0)).relativeTo(start)
             ),
-            config
-        );
+			config
+		);
 
         RamseteCommand ramseteCommand = new RamseteCommand(
             traj,

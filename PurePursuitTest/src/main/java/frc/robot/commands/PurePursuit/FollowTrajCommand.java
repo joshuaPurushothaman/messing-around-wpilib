@@ -34,12 +34,12 @@ public class FollowTrajCommand extends SequentialCommandGroup
 
 		Trajectory traj = TrajectoryGenerator.generateTrajectory(
 			List.of(
-				start,
-				new Pose2d(0.2, 0, new Rotation2d(0)).relativeTo(start)
-			),
+                start,
+                new Pose2d(0.2, 0, new Rotation2d(0)).relativeTo(start)
+            ),
 			config
 		);
-
+		
 		PurePursuitCommand purePursuitCommand = new PurePursuitCommand
 		(
 			traj, dt::getPose, Drivetrain.kinematics.trackWidthMeters, dt::setWheelSpeeds, Constants.kLookAheadDistance, dt

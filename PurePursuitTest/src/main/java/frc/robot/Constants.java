@@ -17,7 +17,7 @@ public final class Constants
 	public static final double kMaxSpeedMetersPerSecond = 0.8 / 2;
 	public static final double kMaxAccelerationMetersPerSecondSquared = kMaxSpeedMetersPerSecond / 2;
 	public static final double kMaxTurnSpeedDegreesPerSecond = 360.0 / 3;
-	public static final double kMaxTurnAccelerationDegreesPerSecondSquared = kMaxTurnSpeedDegreesPerSecond / 0.1;
+	public static final double kMaxTurnAccelerationDegreesPerSecondSquared = kMaxTurnSpeedDegreesPerSecond / 0.01;
 	public static final double kMaxTurnSpeedDegreesPerSecondAim = 55.0 / 0.00001;
 	public static final double kMaxTurnAccelerationDegreesPerSecondSquaredAim = kMaxTurnSpeedDegreesPerSecondAim / 0.000001;
 	
@@ -28,9 +28,9 @@ public final class Constants
 
 	public static final double kPDTD = 6;
 	public static final double kToleranceMeters = 0.05;
-	public static final double kPTTA = 0.015;
+	public static final double kPTTA = 0.025;
 	public static final double kToleranceDegrees = 4;
-	public static final double kPAim = 0.04;
+	public static final double kPAim = 0.025;
 	public static final double kToleranceDegreesAim = 1;
 
 

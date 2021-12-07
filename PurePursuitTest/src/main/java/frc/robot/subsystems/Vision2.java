@@ -12,7 +12,8 @@ public class Vision2 extends SubsystemBase
     Pose2d targetGlobalPose = new Pose2d();
     Transform2d cameraToRobotCenter = new Transform2d();
 
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("Vision");
+    NetworkTable visionTable = NetworkTableInstance.getDefault().getTable("Vision");
+    NetworkTable visionPoseTable = visionTable.getSubTable("Vision");
 
     public Vision2(Transform2d cameraToRobotCenter, Pose2d targetGlobalPose)
     {
@@ -64,14 +65,14 @@ public class Vision2 extends SubsystemBase
 
     private void updateTable()
     {
-        tx = table.getEntry("X").getDouble(0);
-        ty = table.getEntry("Y").getDouble(0);
-        ta = table.getEntry("Area").getDouble(0);
-        tv = table.getEntry("Valid").getBoolean(false);
+        tx = visionTable.getEntry("X").getDouble(0);
+        ty = visionTable.getEntry("Y").getDouble(0);
+        ta = visionTable.getEntry("Area").getDouble(0);
+        tv = visionTable.getEntry("Valid").getBoolean(false);
         
-        double pX = table.getEntry("PoseX").getDouble(0);
-        double pY = table.getEntry("PoseY").getDouble(0);
-        double pThetaDegrees = table.getEntry("PoseTheta").getDouble(0);
+        double pX = visionPoseTable.getEntry("X").getDouble(0);
+        double pY = visionPoseTable.getEntry("Y").getDouble(0);
+        double pThetaDegrees = visionPoseTable.getEntry("Theta Degrees").getDouble(0);
 
         cameraPose = new Pose2d(pX, pY, Rotation2d.fromDegrees(pThetaDegrees));
     }
