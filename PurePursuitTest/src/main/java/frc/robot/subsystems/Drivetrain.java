@@ -8,12 +8,15 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.wpilibj.geometry.*;
 import edu.wpi.first.wpilibj.kinematics.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.*;
 
 public class Drivetrain extends SubsystemBase {
 	private static final double kCountsPerRevolution = 1437.0;
@@ -23,38 +26,57 @@ public class Drivetrain extends SubsystemBase {
 
 	// The Romi has the left and right motors set to
 	// PWM channels 0 and 1 respectively
-	private final Spark left = new Spark(0);
-	private final Spark right = new Spark(1);
+	Spark left = new Spark(0);
+	Spark right = new Spark(1);
 
 	// The Romi has onboard encoders that are hardcoded
 	// to use DIO pins 4/5 and 6/7 for the left and right
-	private final Encoder leftEncoder = new Encoder(4, 5);
-	private final Encoder rightEncoder = new Encoder(6, 7);
+	Encoder leftEncoder = new Encoder(4, 5);
+	Encoder rightEncoder = new Encoder(6, 7);
 
 	// Set up the differential drive controller
-	private final DifferentialDrive dt = new DifferentialDrive(left, right);
+	DifferentialDrive dt = new DifferentialDrive(left, right);
 
 	// Set up the RomiGyro
-	private final RomiGyro gyro = new RomiGyro();
+	RomiGyro gyro = new RomiGyro();
 
 	// Set up the BuiltInAccelerometer
-	// private final BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
+	// BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
 
+	DifferentialDrivePoseEstimator odometryEstimator;
+	
+	Field2d field = new Field2d();
+	Pose2d startingPose;
 
-	private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(new Rotation2d());
+	Vision2 vision;
 
-	// private final Field2d field = new Field2d();
-
-
-	/** Creates a new Drivetrain. */
-	public Drivetrain() {
+	public Drivetrain(Vision2 vision, Pose2d startingPose) {
 		// Use METERS as unit for encoder distances
 		leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
 		rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
 
 		resetEncoders();
 
-		// SmartDashboard.putData(field);
+		this.vision = vision;
+
+		// odometryEstimator = new DifferentialDrivePoseEstimator(
+		// 	new Rotation2d(-Units.degreesToRadians(getHeading())),
+		// 	startingPose,
+		// 	new MatBuilder<>(Nat.N5(), Nat.N1()).fill(0.02, 0.02, 0.01, 0.02, 0.02), // State measurement standard deviations. X, Y, theta.
+		// 	new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01), // Local measurement standard deviations. Left encoder, right encoder, gyro.
+		// 	new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01)); // Global measurement standard deviations. X, Y, and theta.
+
+			
+		odometryEstimator = new DifferentialDrivePoseEstimator(
+			new Rotation2d(-Units.degreesToRadians(getHeading())),
+			startingPose,
+			new MatBuilder<>(Nat.N5(), Nat.N1()).fill(0.02, 0.02, 0.01, 0.02, 0.02), // State measurement standard deviations. X, Y, theta.
+			new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01), // Local measurement standard deviations. Left encoder, right encoder, gyro.
+			new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01)); // Global measurement standard deviations. X, Y, and theta.
+
+		this.startingPose = startingPose;
+
+		SmartDashboard.putData(field);
 	}
 
 	public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
@@ -120,36 +142,42 @@ public class Drivetrain extends SubsystemBase {
 
 	public Pose2d getPose()
 	{
-		return odometry.getPoseMeters();
+		return odometryEstimator.getEstimatedPosition();
 	}
 	
 	public void resetPose()
 	{
-		odometry.resetPosition(new Pose2d(), new Rotation2d());
-		resetEncoders();
+		resetPose(startingPose);
 	}
 
 	public void resetPose(Pose2d pose)
 	{
-		odometry.resetPosition(pose, Rotation2d.fromDegrees(gyro.getAngleZ()));
+		odometryEstimator.resetPosition(pose, Rotation2d.fromDegrees(-getHeading()));
 		resetEncoders();
 	}
 
 	@Override
 	public void periodic() {
-		// Update the odometry in the periodic block
-		odometry.update(new Rotation2d(getHeading()), leftEncoder.getDistance(),
-						rightEncoder.getDistance());
+		// Uncommenting the below lines will enable vision based pose estimation
+		// if (vision.getValid())
+		// 	odometryEstimator.addVisionMeasurement(vision.getPose(), Timer.getFPGATimestamp());
+
+		odometryEstimator.update(
+			Rotation2d.fromDegrees(-getHeading()),
+			getWheelSpeeds(), 
+			leftEncoder.getDistance(),
+			rightEncoder.getDistance()
+		);
 		
-		// field.setRobotPose(odometry.getPoseMeters());
+		field.setRobotPose(getPose());
 		
 		// update PID just in case I do a Hot Reload in VSCode while debugging
 		// leftController.setP(Constants.kP);
 		// rightController.setP(Constants.kP);
 
-		SmartDashboard.putNumber("x", odometry.getPoseMeters().getX());
-		SmartDashboard.putNumber("y", odometry.getPoseMeters().getY());
-		SmartDashboard.putNumber("theta", odometry.getPoseMeters().getRotation().getDegrees());
+		SmartDashboard.putNumber("x", getPose().getX());
+		SmartDashboard.putNumber("y", getPose().getY());
+		SmartDashboard.putNumber("theta", getPose().getRotation().getDegrees());
 	}
 
 	public void resetSensors()
@@ -161,5 +189,10 @@ public class Drivetrain extends SubsystemBase {
 	public void setMaxOutput(double maxOutput)
 	{
 		dt.setMaxOutput(maxOutput);
+	}
+
+	public Pose2d getStartingPose()
+	{
+		return startingPose;
 	}
 }

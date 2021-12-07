@@ -4,15 +4,14 @@ import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import frc.robot.Constants;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.*;
 
 public class AimCommand2 extends ProfiledPIDCommand
 {
-    Vision vision;
+    Vision2 vision;
     Drivetrain dt;
 
-    public AimCommand2(Drivetrain dt, Vision vision)
+    public AimCommand2(Drivetrain dt, Vision2 vision)
     {
         super(new ProfiledPIDController(Constants.kPTTA, 0, 0,
                 new TrapezoidProfile.Constraints(Constants.kMaxTurnSpeedDegreesPerSecond, 
@@ -31,6 +30,6 @@ public class AimCommand2 extends ProfiledPIDCommand
     @Override
     public boolean isFinished()
     {
-        return getController().atGoal() || !vision.getV();
+        return getController().atGoal() || !vision.getValid();
     }
 }

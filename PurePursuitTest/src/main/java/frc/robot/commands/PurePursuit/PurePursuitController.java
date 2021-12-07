@@ -189,4 +189,10 @@ public class PurePursuitController
 	{
 		return findClosestPoint().equals(traj.getStates().get(traj.getStates().size()-1));
 	}
+
+	public void reset()
+	{
+		lastClosestState = traj.getStates().get(0);
+		lastLookAheadPoint = traj.getStates().get(1).poseMeters;
+	}
 }

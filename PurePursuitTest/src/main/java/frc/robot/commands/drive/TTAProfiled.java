@@ -30,6 +30,7 @@ public class TTAProfiled extends ProfiledPIDCommand
     @Override
     public void initialize()
     {
+        super.initialize();
         dt.resetGyro();
     }
 

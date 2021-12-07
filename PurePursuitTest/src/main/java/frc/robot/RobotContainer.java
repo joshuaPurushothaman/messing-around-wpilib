@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.geometry.*;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import frc.robot.commands.*;
 import frc.robot.commands.PurePursuit.*;
@@ -16,9 +17,12 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 
 public class RobotContainer
 {
-	private final Drivetrain dt = new Drivetrain();
 	private final OnBoardIO onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
-	private final Vision vision = new Vision();
+	private final Vision2 vision = new Vision2(
+		new Transform2d(new Translation2d(70.78 / 1000, 10 / 1000), new Rotation2d()), 
+		new Pose2d()
+	);
+	private final Drivetrain dt = new Drivetrain(vision, new Pose2d(3, 3, Rotation2d.fromDegrees(180)));
 
 	private final Joystick controller = new Joystick(0);
 

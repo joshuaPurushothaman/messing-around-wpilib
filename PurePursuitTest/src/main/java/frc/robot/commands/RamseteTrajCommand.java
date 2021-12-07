@@ -30,18 +30,18 @@ public class RamseteTrajCommand extends SequentialCommandGroup
                 .setKinematics(Drivetrain.kinematics)
                 .addConstraint(autoVoltageConstraint);
 
-        // An example trajectory to follow.  All units in meters.
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 0, new Rotation2d(0)),
+        var start = dt.getStartingPose();
+
+        Trajectory traj = TrajectoryGenerator.generateTrajectory(
             List.of(
-                new Translation2d(0.3, 0)
+                start,
+				new Pose2d(0.2, 0, new Rotation2d(0)).relativeTo(start)
             ),
-            new Pose2d(.6, 0, new Rotation2d(0)),
             config
         );
 
         RamseteCommand ramseteCommand = new RamseteCommand(
-            exampleTrajectory,
+            traj,
             dt::getPose,
             new RamseteController(),
             Drivetrain.kinematics,
@@ -51,9 +51,11 @@ public class RamseteTrajCommand extends SequentialCommandGroup
         
         addCommands
         (
-            new InstantCommand(() -> {dt.resetPose(); dt.resetSensors();}),
+            new InstantCommand(() -> dt.resetPose(traj.getInitialPose()), dt),
+            new InstantCommand(() -> dt.resetSensors(), dt),
             ramseteCommand,
-            new RunCommand(() -> dt.setWheelSpeeds(0, 0))
+            new InstantCommand(() -> dt.setWheelSpeeds(0, 0), dt),
+            new PrintCommand("\n\n\n\n\nTRAJ DONE\n\n\n\n\n")
         );
     }
 }

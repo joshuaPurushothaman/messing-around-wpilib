@@ -39,4 +39,9 @@ public class PurePursuitCommand extends CommandBase
     {
         return controller.isFinished();
     }
+
+    public PurePursuitController getController()
+    {
+        return controller;
+    }
 }
