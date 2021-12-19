@@ -33,10 +33,11 @@ public class FollowTrajCommand extends SequentialCommandGroup
 		var start = dt.getStartingPose();
 
 		Trajectory traj = TrajectoryGenerator.generateTrajectory(
+			start,
 			List.of(
-                start,
-                new Pose2d(0.2, 0, new Rotation2d(0)).relativeTo(start)
+				// new Translation2d(0.1, 0.1)
             ),
+			new Pose2d(0.2, 0, new Rotation2d(0)).relativeTo(start),
 			config
 		);
 		

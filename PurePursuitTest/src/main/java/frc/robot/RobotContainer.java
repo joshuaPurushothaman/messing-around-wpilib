@@ -7,8 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.geometry.*;
 import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.commands.*;
 import frc.robot.commands.PurePursuit.*;
+import frc.robot.commands.aim.*;
 import frc.robot.commands.drive.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.OnBoardIO.ChannelMode;
@@ -19,10 +21,10 @@ public class RobotContainer
 {
 	private final OnBoardIO onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
 	private final Vision2 vision = new Vision2(
-		new Transform2d(new Translation2d(70.78 / 1000, 10 / 1000), new Rotation2d()), 
-		new Pose2d()
+		new Transform2d(new Translation2d(70.78 / 1000, 10.0 / 1000), new Rotation2d()), 
+		new Pose2d(0, 5.6982, new Rotation2d())
 	);
-	private final Drivetrain dt = new Drivetrain(vision, new Pose2d(3, 3, Rotation2d.fromDegrees(180)));
+	private final Drivetrain dt = new Drivetrain(vision, new Pose2d(Units.feetToMeters(10), 5.6892, Rotation2d.fromDegrees(180)));
 
 	private final Joystick controller = new Joystick(0);
 
@@ -50,6 +52,7 @@ public class RobotContainer
 		chooser.addOption("Ultimate DTD", new UltimateDTD(0.3, dt));
 		chooser.addOption("AimCommand", new AimCommand(dt, vision).perpetually());
 		chooser.addOption("AimCommand2", new AimCommand2(dt, vision).perpetually());
+		chooser.addOption("SimpleAimCommand", new SimpleAimCommand(dt, vision).perpetually());
 		chooser.addOption("Profiled TTA", new TTAProfiled(90, dt));
 
 		SmartDashboard.putData("Auto chooser", chooser);

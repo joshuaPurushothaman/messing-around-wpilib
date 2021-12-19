@@ -121,4 +121,15 @@ public class RomiGyro {
 			m_angleZOffset = m_simAngleZ.get();
 		}
 	}
+
+	/**
+	 * FOR SIMULATION ONLY
+	 * @param angleDegrees
+	 */
+	public void setAngleZ(double angleDegrees)
+	{
+		if (m_simRateZ != null) {
+			m_simAngleZ.set(angleDegrees);
+		}
+	}
 }

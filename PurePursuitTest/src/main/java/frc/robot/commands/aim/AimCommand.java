@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.aim;
 
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
@@ -25,7 +25,8 @@ public class AimCommand extends ProfiledPIDCommand {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinished()
+    {
         return getController().atGoal() || !vision.getValid();
     }
 }

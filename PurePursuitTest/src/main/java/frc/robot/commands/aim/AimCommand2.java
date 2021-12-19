@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.aim;
 
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
@@ -13,9 +13,9 @@ public class AimCommand2 extends ProfiledPIDCommand
 
     public AimCommand2(Drivetrain dt, Vision2 vision)
     {
-        super(new ProfiledPIDController(Constants.kPTTA, 0, 0,
-                new TrapezoidProfile.Constraints(Constants.kMaxTurnSpeedDegreesPerSecond, 
-                    Constants.kMaxTurnAccelerationDegreesPerSecondSquared)),
+        super(new ProfiledPIDController(Constants.kPAim, 0, 0,
+                new TrapezoidProfile.Constraints(Constants.kMaxTurnSpeedDegreesPerSecondAim, 
+                    Constants.kMaxTurnAccelerationDegreesPerSecondSquaredAim)),
             dt::getHeading,
             new TrapezoidProfile.State(-vision.getX(), 0),
             (output, setpoint) -> dt.arcadeDrive(0, output),
@@ -25,6 +25,14 @@ public class AimCommand2 extends ProfiledPIDCommand
             this.dt = dt;
 
             getController().setTolerance(Constants.kToleranceDegreesAim);
+    }
+
+    @Override
+    public void initialize()
+    {
+        super.initialize();
+
+        dt.resetGyro();
     }
 
     @Override

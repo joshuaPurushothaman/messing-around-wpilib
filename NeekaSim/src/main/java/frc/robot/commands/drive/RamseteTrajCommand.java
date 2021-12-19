@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
 import java.util.List;
 
@@ -16,8 +16,8 @@ public class RamseteTrajCommand extends SequentialCommandGroup
 	{       
 		var autoVoltageConstraint =
 			new DifferentialDriveVoltageConstraint(
-				new SimpleMotorFeedforward(Constants.rksVolts, 
-											Constants.rkvVoltSecondsPerMeter),
+				new SimpleMotorFeedforward(Constants.ksVolts, 
+											Constants.kvVoltSecondsPerMeter),
 				Drivetrain.kinematics,
 				10);
 
@@ -34,7 +34,7 @@ public class RamseteTrajCommand extends SequentialCommandGroup
 		Trajectory traj = TrajectoryGenerator.generateTrajectory(
 			List.of(
 				start,
-				new Pose2d(0.2, 0, new Rotation2d(0)).relativeTo(start)
+				new Pose2d(1, 0, new Rotation2d(0)).relativeTo(start)
 			),
 			config
 		);

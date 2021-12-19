@@ -38,5 +38,4 @@ public class DriveToDistanceCommand extends PIDCommand
     {
         return getController().atSetpoint();
     }
-    
 }

@@ -13,6 +13,5 @@
     "**/.settings": true,
     "**/.factorypath": true,
     "**/*~": true
-  },
-  "wpilib.skipSelectSimulateExtension": true,
+  }
 }

@@ -14,25 +14,27 @@ package frc.robot;
  */
 public final class Constants
 {
-	public static final double kMaxSpeedMetersPerSecond = 0.8 / 2;
+	public static final double kMaxSpeedMetersPerSecond = 0.8;
 	public static final double kMaxAccelerationMetersPerSecondSquared = kMaxSpeedMetersPerSecond / 2;
-	public static final double kMaxTurnSpeedDegreesPerSecond = 360.0 / 3;
+	public static final double kMaxTurnSpeedDegreesPerSecond = 360.0 / 3.1;
 	public static final double kMaxTurnAccelerationDegreesPerSecondSquared = kMaxTurnSpeedDegreesPerSecond / 0.01;
-	public static final double kMaxTurnSpeedDegreesPerSecondAim = 55.0 / 0.00001;
-	public static final double kMaxTurnAccelerationDegreesPerSecondSquaredAim = kMaxTurnSpeedDegreesPerSecondAim / 0.000001;
+	// public static final double kMaxTurnSpeedDegreesPerSecondAim = 55.0 / 0.1;
+	// public static final double kMaxTurnAccelerationDegreesPerSecondSquaredAim = kMaxTurnSpeedDegreesPerSecondAim / 0.0001;
+	public static final double kMaxTurnSpeedDegreesPerSecondAim = kMaxTurnSpeedDegreesPerSecond; // TODO: Temp
+	public static final double kMaxTurnAccelerationDegreesPerSecondSquaredAim = kMaxTurnAccelerationDegreesPerSecondSquared;
 	
-	public static final double kLookAheadDistance = 0.15;
+	public static final double kLookAheadDistance = 0.15; // TODO: tune
 
-
-	public static final double kPSetWheelSpeeds = 0.15;
-
+	// These are pretty good, no change pls
 	public static final double kPDTD = 6;
 	public static final double kToleranceMeters = 0.05;
 	public static final double kPTTA = 0.025;
 	public static final double kToleranceDegrees = 4;
+
 	public static final double kPAim = 0.025;
 	public static final double kToleranceDegreesAim = 1;
 
+	public static final double kPSetWheelSpeeds = 0.15;
 
 	// perfect feedforwards! woohoo! hand tuned babie!
 	public static final double lksVolts = 0.9;

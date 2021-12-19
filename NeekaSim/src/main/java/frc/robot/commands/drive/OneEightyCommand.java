@@ -5,21 +5,19 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
-public class TurnToAngleCommand extends PIDCommand
+public class OneEightyCommand extends PIDCommand
 {
-    Drivetrain dt;
-    double targetAngleDegrees;
-
-    public TurnToAngleCommand(double targetAngleDegrees, Drivetrain dt)
+	Drivetrain dt;
+	
+    public OneEightyCommand(Drivetrain dt)
     {
         super(new PIDController(Constants.kPTTA, 0, 0),
             dt::getHeading,
-            targetAngleDegrees,
+            180,
             output -> dt.arcadeDrive(0, output),
             dt);
 
         this.dt = dt;
-        this.targetAngleDegrees = targetAngleDegrees;
         
         getController().setTolerance(Constants.kToleranceDegrees);
         getController().enableContinuousInput(-180, 180);
@@ -30,7 +28,7 @@ public class TurnToAngleCommand extends PIDCommand
     {
         super.initialize();
 
-        double setpoint = dt.getHeading() + targetAngleDegrees;
+        double setpoint = dt.getHeading() + 180;
         this.m_setpoint = () -> setpoint;
     }
 
