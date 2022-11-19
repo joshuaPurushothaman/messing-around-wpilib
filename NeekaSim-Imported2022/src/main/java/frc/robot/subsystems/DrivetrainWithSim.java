@@ -1,18 +1,24 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.geometry.*;
 import edu.wpi.first.wpilibj.simulation.*;
-import edu.wpi.first.wpilibj.system.plant.DCMotor;
-import edu.wpi.first.wpiutil.math.VecBuilder;
+import edu.wpi.first.math.system.plant.DCMotor;
+
+import com.revrobotics.REVPhysicsSim;
+
+// import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.*;
 
 public class DrivetrainWithSim extends Drivetrain
 {
 	DifferentialDrivetrainSim drivetrainSim = new DifferentialDrivetrainSim(
 		DCMotor.getNEO(2),
 		10.71,
+		// DCMotor.getNEO(3),
+		// 7.56,
 		0.48866695903563, // from CAD
 		7.9043, // from CAD
+		// 54, // from CAD
 		kWheelDiameterMeters / 2,
 		kTrackWidthMeters,
 		// The standard deviations for measurement noise:
@@ -24,14 +30,14 @@ public class DrivetrainWithSim extends Drivetrain
 		null
 	);
 
-	EncoderSim leftEncoderSim = new EncoderSim(leftEncoder);
-	EncoderSim rightEncoderSim = new EncoderSim(rightEncoder);
-
 	ADXRS450_GyroSim gyroSim = new ADXRS450_GyroSim(gyro);
 
-	public DrivetrainWithSim(Pose2d startingPose)
+	public DrivetrainWithSim()
 	{
-		super(startingPose);
+		super();
+
+		REVPhysicsSim.getInstance().addSparkMax(leftMotor, DCMotor.getNEO(1));
+		REVPhysicsSim.getInstance().addSparkMax(rightMotor, DCMotor.getNEO(1));
 	}
 	
 	@Override
@@ -43,7 +49,6 @@ public class DrivetrainWithSim extends Drivetrain
 			drivetrainSim.setPose(pose);
 	}
 
-	
 	@Override
 	public void simulationPeriodic()
 	{
@@ -59,10 +64,13 @@ public class DrivetrainWithSim extends Drivetrain
 		drivetrainSim.update(0.02);
 
 		// Update all of our sensors.
-		leftEncoderSim.setDistance(drivetrainSim.getLeftPositionMeters());
-		leftEncoderSim.setRate(drivetrainSim.getLeftVelocityMetersPerSecond());
-		rightEncoderSim.setDistance(drivetrainSim.getRightPositionMeters());
-		rightEncoderSim.setRate(drivetrainSim.getRightVelocityMetersPerSecond());
+		// leftEncoderSim.setDistance(drivetrainSim.getLeftPositionMeters());
+		// leftEncoderSim.setRate(drivetrainSim.getLeftVelocityMetersPerSecond());
+		// rightEncoderSim.setDistance(drivetrainSim.getRightPositionMeters());
+		// rightEncoderSim.setRate(drivetrainSim.getRightVelocityMetersPerSecond());
+		leftEncoder.setPosition(drivetrainSim.getLeftPositionMeters());
+		rightEncoder.setPosition(drivetrainSim.getRightPositionMeters());
+
 		gyroSim.setAngle(-drivetrainSim.getHeading().getDegrees());
 	}
 }
